@@ -3,8 +3,7 @@ protobuf>=5.26.0
 pillow==10.4.0
 openai
 supabase
-python-dotenv
-pandas
-plotly
-PyPDF2
+pypdf
+langchain
+langchain-openai
 langchain-text-splitters
