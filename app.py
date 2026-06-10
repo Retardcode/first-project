@@ -1,5 +1,4 @@
 import streamlit as st
-import os
 from rag_engine import process_and_upload_file, query_rag
 from openai import OpenAI
 
@@ -75,20 +74,27 @@ st.markdown("""
 if "messages" not in st.session_state:
     st.session_state.messages = []
 
-# 4. Sidebar: Document Management
+# 4. Sidebar: Document Management & Categorization
 with st.sidebar:
     st.markdown("### 🗄️ Neural Database")
-    st.markdown("Upload documents to expand the system's knowledge.")
+    st.markdown("Upload and classify documents into the vector space.")
     
-    uploaded_file = st.file_uploader("", type=["pdf"], label_visibility="collapsed")
+    # Category Tagging Dropdown
+    target_category = st.selectbox(
+        "Select Classification:",
+        ["compliance assets", "documents", "regulatory documents", "general"]
+    )
+    
+    uploaded_file = st.file_uploader("Drop PDF here", type=["pdf"], label_visibility="collapsed")
+    
     if uploaded_file:
-        with st.status("Initializing Neural Upload...", expanded=True) as status:
+        with st.status(f"Integrating into '{target_category}'...", expanded=True) as status:
             st.write("Extracting data blocks...")
             with open("temp.pdf", "wb") as f:
                 f.write(uploaded_file.getbuffer())
             
             st.write("Vectorizing context...")
-            process_and_upload_file("temp.pdf")
+            process_and_upload_file("temp.pdf", category_name=target_category)
             
             status.update(label="Upload Complete!", state="complete", expanded=False)
             st.success("Knowledge successfully integrated into Supabase.")
@@ -138,6 +144,7 @@ if prompt := st.chat_input("Query the knowledge base..."):
                     full_response += chunk.choices[0].delta.content
                     message_placeholder.markdown(full_response + "▌")
             
+            # Remove the cursor block when finished
             message_placeholder.markdown(full_response)
             
         # Save assistant response to state
