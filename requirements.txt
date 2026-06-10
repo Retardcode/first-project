@@ -1,0 +1,8 @@
+streamlit==1.32.0
+openai
+supabase
+python-dotenv
+pandas
+plotly
+PyPDF2
+langchain-text-splitters
