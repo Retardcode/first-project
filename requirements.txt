@@ -8,3 +8,6 @@ langchain
 langchain-openai
 langchain-text-splitters
 langchain-community
+plotly
+pandas
+numpy
